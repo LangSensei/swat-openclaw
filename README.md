@@ -69,5 +69,5 @@ If you just want SWAT with GitHub Copilot CLI, you don't need this repo. Install
 
 ## Related Repos
 
-- [swat-v2](https://github.com/LangSensei/swat-v2) — Commander engine (Go)
+- [swat](https://github.com/LangSensei/swat) — Commander engine (Go)
 - [swat-marketplace](https://github.com/LangSensei/swat-marketplace) — Squads, skills, and MCPs
