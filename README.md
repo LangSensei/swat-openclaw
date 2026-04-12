@@ -11,23 +11,56 @@ OpenClaw integration for [SWAT](https://github.com/LangSensei/swat) — MCP plug
 
 - [SWAT](https://github.com/LangSensei/swat) installed (`swat` binary in PATH)
 - [OpenClaw](https://github.com/openclaw/openclaw) running
+- Node.js 18+
 
 ## Install
 
+### Linux / macOS
+
 ```bash
-# Clone
-git clone https://github.com/LangSensei/swat-openclaw.git
-cd swat-openclaw
-
-# Install plugin dependencies
-cd plugin && npm install && cd ..
-
-# Register in OpenClaw config (~/.openclaw/openclaw.json):
-# 1. Add plugin path to plugins.load.paths
-# 2. Enable swat-mcp-bridge with binaryPath pointing to your swat binary
+curl -fsSL https://raw.githubusercontent.com/LangSensei/swat-openclaw/main/install.sh | bash
 ```
 
-### OpenClaw Config Example
+### Windows
+
+```powershell
+irm https://raw.githubusercontent.com/LangSensei/swat-openclaw/main/install.ps1 | iex
+```
+
+This will:
+1. Download plugin and skill files
+2. Install plugin dependencies (`npm install`)
+3. Register the plugin in your OpenClaw config (`~/.openclaw/openclaw.json`)
+
+Then restart OpenClaw:
+```bash
+openclaw gateway restart
+```
+
+## Uninstall
+
+### Linux / macOS
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/LangSensei/swat-openclaw/main/uninstall.sh | bash
+```
+
+### Windows
+
+```powershell
+irm https://raw.githubusercontent.com/LangSensei/swat-openclaw/main/uninstall.ps1 | iex
+```
+
+## Manual Setup
+
+If you prefer manual installation:
+
+```bash
+git clone https://github.com/LangSensei/swat-openclaw.git
+cd swat-openclaw/plugin && npm install
+```
+
+Then add to your OpenClaw config (`~/.openclaw/openclaw.json`):
 
 ```json
 {
@@ -47,9 +80,19 @@ cd plugin && npm install && cd ..
 }
 ```
 
-Then restart OpenClaw:
-```bash
-openclaw gateway restart
+## Using SWAT without OpenClaw
+
+If you just want SWAT with any MCP-compatible agent, you don't need this repo. Install [SWAT](https://github.com/LangSensei/swat) standalone and configure `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "swat": {
+      "command": "swat",
+      "args": ["mcp"]
+    }
+  }
+}
 ```
 
 ## Related Repos
