@@ -25,8 +25,8 @@ check_prereqs() {
     fi
 
     if ! command -v swat >/dev/null 2>&1; then
-        err "SWAT binary not found. Install swat-v2 first:"
-        echo "  curl -fsSL https://raw.githubusercontent.com/LangSensei/swat-v2/main/install.sh | bash"
+        err "SWAT binary not found. Install swat first:"
+        echo "  curl -fsSL https://raw.githubusercontent.com/LangSensei/swat/main/install.sh | bash"
         exit 1
     fi
 

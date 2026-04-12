@@ -20,8 +20,8 @@ if ($missing.Count -gt 0) { Err "Missing prerequisites: $($missing -join ', ')";
 
 if (-not (Get-Command swat -ErrorAction SilentlyContinue)) {
     if (-not (Test-Path (Join-Path $env:USERPROFILE ".local\bin\swat.exe"))) {
-        Err "SWAT binary not found. Install swat-v2 first:"
-        Write-Host "  irm https://raw.githubusercontent.com/LangSensei/swat-v2/main/install.ps1 | iex"
+        Err "SWAT binary not found. Install swat first:"
+        Write-Host "  irm https://raw.githubusercontent.com/LangSensei/swat/main/install.ps1 | iex"
         exit 1
     }
 }
