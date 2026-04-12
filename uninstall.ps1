@@ -1,5 +1,5 @@
 # SWAT OpenClaw Integration Uninstaller for Windows
-# Usage: powershell -File uninstall.ps1 [--yes]
+# Usage: irm https://raw.githubusercontent.com/LangSensei/swat-openclaw/main/uninstall.ps1 | iex
 
 $ErrorActionPreference = "Stop"
 
