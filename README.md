@@ -52,21 +52,6 @@ Then restart OpenClaw:
 openclaw gateway restart
 ```
 
-## Using SWAT without OpenClaw
-
-If you just want SWAT with GitHub Copilot CLI, you don't need this repo. Install [swat](https://github.com/LangSensei/swat) standalone and configure `.mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "swat": {
-      "command": "swat",
-      "args": ["mcp"]
-    }
-  }
-}
-```
-
 ## Related Repos
 
 - [swat](https://github.com/LangSensei/swat) — Commander engine (Go)
