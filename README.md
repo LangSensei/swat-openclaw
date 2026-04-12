@@ -1,6 +1,6 @@
 # swat-openclaw
 
-OpenClaw integration for [SWAT](https://github.com/LangSensei/swat-v2) — MCP plugin bridge + skill definition.
+OpenClaw integration for [SWAT](https://github.com/LangSensei/swat) — MCP plugin bridge + skill definition.
 
 ## What's Inside
 
@@ -9,7 +9,7 @@ OpenClaw integration for [SWAT](https://github.com/LangSensei/swat-v2) — MCP p
 
 ## Prerequisites
 
-- [SWAT v2](https://github.com/LangSensei/swat-v2) installed (`swat` binary in PATH)
+- [SWAT](https://github.com/LangSensei/swat) installed (`swat` binary in PATH)
 - [OpenClaw](https://github.com/openclaw/openclaw) running
 
 ## Install
@@ -54,7 +54,7 @@ openclaw gateway restart
 
 ## Using SWAT without OpenClaw
 
-If you just want SWAT with GitHub Copilot CLI, you don't need this repo. Install [swat-v2](https://github.com/LangSensei/swat-v2) standalone and configure `.mcp.json`:
+If you just want SWAT with GitHub Copilot CLI, you don't need this repo. Install [swat](https://github.com/LangSensei/swat) standalone and configure `.mcp.json`:
 
 ```json
 {
