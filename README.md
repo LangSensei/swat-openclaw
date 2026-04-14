@@ -80,21 +80,6 @@ Then add to your OpenClaw config (`~/.openclaw/openclaw.json`):
 }
 ```
 
-## Using SWAT without OpenClaw
-
-If you just want SWAT with any MCP-compatible agent, you don't need this repo. Install [SWAT](https://github.com/LangSensei/swat) standalone and configure `.mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "swat": {
-      "command": "swat",
-      "args": ["mcp"]
-    }
-  }
-}
-```
-
 ## Related Repos
 
 - [swat](https://github.com/LangSensei/swat) — Commander engine (Go)
