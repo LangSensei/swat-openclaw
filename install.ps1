@@ -98,7 +98,7 @@ if (!cfg.plugins.load.paths.includes('$pluginPath')) {
 }
 cfg.plugins.entries['swat-mcp-bridge'] = {
     enabled: true,
-    config: { binaryPath: '$binPath' }
+    config: { binaryPath: '$binPath', runtime: 'copilot' }
 };
 fs.writeFileSync('$($ocConfig -replace '\\', '/')', JSON.stringify(cfg, null, 2) + '\n');
 "@
@@ -116,6 +116,11 @@ Remove-Item -Recurse -Force $tmpDir -ErrorAction SilentlyContinue
 
 Write-Host ""
 Ok "SWAT OpenClaw integration installed! 🚀"
+Write-Host ""
+Info "Configuration:"
+Write-Host "  Runtime is set to 'copilot' (default)."
+Write-Host "  To change, edit ~/.openclaw/openclaw.json:"
+Write-Host "    plugins.entries.swat-mcp-bridge.config.runtime = `"copilot`" | `"gemini`""
 Write-Host ""
 Info "Next: openclaw gateway restart"
 Write-Host ""
