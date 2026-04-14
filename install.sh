@@ -119,7 +119,7 @@ register_plugin() {
         }
         cfg.plugins.entries['swat-mcp-bridge'] = {
             enabled: true,
-            config: { binaryPath: '$bin_path' }
+            config: { binaryPath: '$bin_path', runtime: 'copilot' }
         };
         fs.writeFileSync('$oc_config', JSON.stringify(cfg, null, 2) + '\n');
     " 2>/dev/null; then
@@ -152,6 +152,11 @@ main() {
 
     echo ""
     ok "SWAT OpenClaw integration installed! 🚀"
+    echo ""
+    info "Configuration:"
+    echo "  Runtime is set to 'copilot' (default)."
+    echo "  To change, edit ~/.openclaw/openclaw.json:"
+    echo "    plugins.entries.swat-mcp-bridge.config.runtime = \"copilot\" | \"gemini\""
     echo ""
     info "Next: openclaw gateway restart"
     echo ""
