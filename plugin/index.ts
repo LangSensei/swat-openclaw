@@ -14,6 +14,7 @@ function json(data: unknown) {
 }
 
 let swatBinary = "";
+let runtime = "copilot";
 
 const TOOLS = [
   {
@@ -107,6 +108,14 @@ const TOOLS = [
       squad: Type.String({ description: "Squad name to update" }),
     }),
   },
+  {
+    name: "swat_notify",
+    label: "SWAT Notify",
+    description: "Send a notification to the user.",
+    parameters: Type.Object({
+      message: Type.String({ description: "Notification message to display" }),
+    }),
+  },
 ];
 
 async function ensureConnected(logger: any): Promise<Client> {
@@ -114,6 +123,7 @@ async function ensureConnected(logger: any): Promise<Client> {
 
   transport = new StdioClientTransport({
     command: swatBinary,
+    args: ["--runtime", runtime, "--notify", "openclaw"],
   });
 
   client = new Client({
@@ -136,6 +146,9 @@ const plugin = {
     const logger = api.logger;
     if (api.pluginConfig?.binaryPath) {
       swatBinary = api.pluginConfig.binaryPath as string;
+    }
+    if (api.pluginConfig?.runtime) {
+      runtime = api.pluginConfig.runtime as string;
     }
     if (!swatBinary) {
       logger.error("SWAT binary path not configured. Run install.sh or set plugins.entries.swat-mcp-bridge.config.binaryPath");

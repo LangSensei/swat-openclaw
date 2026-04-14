@@ -72,13 +72,23 @@ Then add to your OpenClaw config (`~/.openclaw/openclaw.json`):
       "swat-mcp-bridge": {
         "enabled": true,
         "config": {
-          "binaryPath": "~/.local/bin/swat"
+          "binaryPath": "~/.local/bin/swat",
+          "runtime": "copilot"
         }
       }
     }
   }
 }
 ```
+
+## Configuration
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `binaryPath` | — | Path to the `swat` binary (required) |
+| `runtime` | `copilot` | Agent runtime: `copilot`, `gemini` |
+
+Notifications are hardcoded to `openclaw` (sent via Gateway API).
 
 ## Related Repos
 
