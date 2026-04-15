@@ -26,6 +26,11 @@ if (-not (Get-Command swat -ErrorAction SilentlyContinue)) {
     }
 }
 
+if (-not (Get-Command openclaw -ErrorAction SilentlyContinue)) {
+    Err "OpenClaw not found. Install OpenClaw first, then re-run this installer."
+    exit 1
+}
+
 # --- Download ---
 
 Write-Host ""
@@ -107,7 +112,12 @@ fs.writeFileSync('$($ocConfig -replace '\\', '/')', JSON.stringify(cfg, null, 2)
         Err "Failed to auto-register. Manually add to $ocConfig"
     }
 } else {
-    Info "OpenClaw config not found. After installing OpenClaw, add plugin path to config."
+    Info "OpenClaw config not found at $ocConfig"
+    Info "After installing OpenClaw, add to your config:"
+    Write-Host ""
+    Write-Host "  plugins.load.paths: [`"$pluginPath`"]"
+    Write-Host "  plugins.entries.swat-mcp-bridge.enabled: true"
+    Write-Host ""
 }
 
 # --- Cleanup ---

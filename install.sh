@@ -31,7 +31,7 @@ check_prereqs() {
     fi
 
     if ! command -v openclaw >/dev/null 2>&1; then
-        info "Warning: OpenClaw not found. Plugin will be installed but not activated."
+        die "OpenClaw not found. Install OpenClaw first, then re-run this installer."
     fi
 }
 

@@ -4,7 +4,7 @@ OpenClaw integration for [SWAT](https://github.com/LangSensei/swat) — MCP plug
 
 ## What's Inside
 
-- **plugin/** — OpenClaw MCP bridge that exposes SWAT tools (dispatch, list, cancel, squads, schedules, browse, install, uninstall) to OpenClaw agents
+- **plugin/** — OpenClaw MCP bridge that exposes SWAT tools to OpenClaw agents
 - **skill/** — OpenClaw skill definition (`SKILL.md`) that teaches agents how to use SWAT
 
 ## Prerequisites
