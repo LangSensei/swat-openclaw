@@ -27,7 +27,8 @@ if (-not (Get-Command swat -ErrorAction SilentlyContinue)) {
 }
 
 if (-not (Get-Command openclaw -ErrorAction SilentlyContinue)) {
-    Info "Warning: OpenClaw not found. Plugin will be installed but not activated."
+    Err "OpenClaw not found. Install OpenClaw first, then re-run this installer."
+    exit 1
 }
 
 # --- Download ---

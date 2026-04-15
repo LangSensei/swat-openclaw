@@ -2,8 +2,11 @@ import type { OpenClawPluginApi } from "openclaw/plugin-sdk";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { Type } from "@sinclair/typebox";
+import { readFileSync } from "node:fs";
 
-const PLUGIN_VERSION = "1.1.0";
+const { version: PLUGIN_VERSION } = JSON.parse(
+  readFileSync(new URL("./openclaw.plugin.json", import.meta.url), "utf8"),
+);
 
 let client: Client | null = null;
 let transport: StdioClientTransport | null = null;
@@ -135,10 +138,15 @@ async function ensureConnected(logger: any): Promise<Client> {
     version: PLUGIN_VERSION,
   });
 
-  const timeout = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new Error("SWAT connection timeout")), CONNECTION_TIMEOUT_MS)
-  );
-  await Promise.race([client.connect(transport), timeout]);
+  let timer: NodeJS.Timeout;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error("SWAT connection timeout")), CONNECTION_TIMEOUT_MS);
+  });
+  try {
+    await Promise.race([client.connect(transport), timeout]);
+  } finally {
+    clearTimeout(timer!);
+  }
   logger.info("SWAT MCP server connected");
 
   return client;
