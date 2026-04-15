@@ -51,36 +51,6 @@ curl -fsSL https://raw.githubusercontent.com/LangSensei/swat-openclaw/main/unins
 irm https://raw.githubusercontent.com/LangSensei/swat-openclaw/main/uninstall.ps1 | iex
 ```
 
-## Manual Setup
-
-If you prefer manual installation:
-
-```bash
-git clone https://github.com/LangSensei/swat-openclaw.git
-cd swat-openclaw/plugin && npm install
-```
-
-Then add to your OpenClaw config (`~/.openclaw/openclaw.json`):
-
-```json
-{
-  "plugins": {
-    "load": {
-      "paths": ["/path/to/swat-openclaw/plugin"]
-    },
-    "entries": {
-      "swat-mcp-bridge": {
-        "enabled": true,
-        "config": {
-          "binaryPath": "~/.local/bin/swat",
-          "runtime": "copilot"
-        }
-      }
-    }
-  }
-}
-```
-
 ## Configuration
 
 | Key | Default | Description |
