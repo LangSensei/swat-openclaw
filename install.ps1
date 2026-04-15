@@ -19,7 +19,7 @@ if (-not (Get-Command npm -ErrorAction SilentlyContinue))  { $missing += "npm" }
 if ($missing.Count -gt 0) { Err "Missing prerequisites: $($missing -join ', ')"; exit 1 }
 
 if (-not (Get-Command swat -ErrorAction SilentlyContinue)) {
-    if (-not (Test-Path (Join-Path $env:USERPROFILE ".local\bin\swat.exe"))) {
+    if (-not (Test-Path (Join-Path $env:USERPROFILE ".swat\bin\swat.exe"))) {
         Err "SWAT binary not found. Install swat first:"
         Write-Host "  irm https://raw.githubusercontent.com/LangSensei/swat/main/install.ps1 | iex"
         exit 1
@@ -86,7 +86,7 @@ $pluginPath = $PluginDir -replace '\\', '/'
 
 # Find swat binary
 $binPath = (Get-Command swat -ErrorAction SilentlyContinue).Source
-if (-not $binPath) { $binPath = (Join-Path $env:USERPROFILE ".local\bin\swat.exe") }
+if (-not $binPath) { $binPath = (Join-Path $env:USERPROFILE ".swat\bin\swat.exe") }
 $binPath = $binPath -replace '\\', '/'
 
 if (Test-Path $ocConfig) {
