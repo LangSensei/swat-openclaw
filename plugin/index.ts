@@ -3,6 +3,8 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { Type } from "@sinclair/typebox";
 
+const PLUGIN_VERSION = "1.1.0";
+
 let client: Client | null = null;
 let transport: StdioClientTransport | null = null;
 
@@ -118,6 +120,8 @@ const TOOLS = [
   },
 ];
 
+const CONNECTION_TIMEOUT_MS = 10_000;
+
 async function ensureConnected(logger: any): Promise<Client> {
   if (client) return client;
 
@@ -128,10 +132,13 @@ async function ensureConnected(logger: any): Promise<Client> {
 
   client = new Client({
     name: "openclaw-swat-bridge",
-    version: "1.0.0",
+    version: PLUGIN_VERSION,
   });
 
-  await client.connect(transport);
+  const timeout = new Promise<never>((_, reject) =>
+    setTimeout(() => reject(new Error("SWAT connection timeout")), CONNECTION_TIMEOUT_MS)
+  );
+  await Promise.race([client.connect(transport), timeout]);
   logger.info("SWAT MCP server connected");
 
   return client;
@@ -164,19 +171,21 @@ const plugin = {
           parameters: tool.parameters,
           async execute(_toolCallId, params) {
             try {
-              const c = await ensureConnected(logger);
-              const result = await c.callTool({
+              const conn = await ensureConnected(logger);
+              const result = await conn.callTool({
                 name: tool.name,
                 arguments: params as Record<string, unknown>,
               });
-              // MCP SDK returns { content: [...] }
               const text = result.content
-                ?.filter((c: any) => c.type === "text")
-                .map((c: any) => c.text)
+                ?.filter((part: any) => part.type === "text")
+                .map((part: any) => part.text)
                 .join("\n") ?? "no result";
               return json({ result: text });
             } catch (err) {
-              // If connection died, reset for next call
+              logger.error(`Tool ${tool.name} failed: ${err instanceof Error ? err.message : String(err)}`);
+              if (transport) {
+                try { await transport.close(); } catch {}
+              }
               client = null;
               transport = null;
               return json({ error: err instanceof Error ? err.message : String(err) });
@@ -185,6 +194,20 @@ const plugin = {
         }),
         { name: tool.name },
       );
+    }
+
+    // Shutdown lifecycle: clean up transport and client
+    if (api.onShutdown) {
+      api.onShutdown(async () => {
+        if (client) {
+          try { await client.close(); } catch {}
+        }
+        if (transport) {
+          try { await transport.close(); } catch {}
+        }
+        client = null;
+        transport = null;
+      });
     }
 
     logger.info(`SWAT MCP Bridge registered ${TOOLS.length} tools`);
