@@ -1,6 +1,6 @@
 ---
 name: swat
-description: "SWAT autonomous squad orchestration. Use when: dispatching tasks, checking operation status, managing squads/schedules, or monitoring task completions. Covers dispatch workflow, debrief notifications, scheduling, and marketplace operations."
+description: "SWAT autonomous squad orchestration. Use when: dispatching tasks, checking operation status, managing squads/intake, or monitoring task completions. Covers dispatch workflow, debrief notifications, scheduling, and marketplace operations."
 ---
 
 # SWAT - Autonomous Squad Orchestration
@@ -34,9 +34,9 @@ SWAT dispatches tasks to autonomous AI squads powered by GitHub Copilot CLI. Eac
 ### Schedule
 | Tool | Purpose |
 |---|---|
-| `swat_schedule_create` | Create a scheduled recurring task (zero LLM cost) |
-| `swat_schedules` | List all scheduled tasks with next run times |
-| `swat_schedule_delete` | Delete a scheduled task |
+| `swat_intake_create` | Create a scheduled recurring task (zero LLM cost) |
+| `swat_intake_list` | List all intake queue entries |
+| `swat_intake_delete` | Delete an intake queue entry |
 
 ## How to Dispatch
 
@@ -46,19 +46,18 @@ SWAT dispatches tasks to autonomous AI squads powered by GitHub Copilot CLI. Eac
 
 ## Scheduling Recurring Tasks
 
-Use SWAT's built-in scheduler for deterministic, zero-LLM-cost recurring tasks:
+Use SWAT's built-in intake queue for deterministic, zero-LLM-cost recurring tasks:
 
 ```
-swat_schedule_create(brief="分析紫金矿业601899", cron="0 9 * * 1", timezone="Asia/Shanghai")
+swat_intake_create(brief="分析紫金矿业601899", cron="0 9 * * 1", timezone="Asia/Shanghai")
 ```
 
 - **Cron format**: Standard 5-field — `min hour dom month dow`
 - **`immediate`**: Set to `true` to trigger the first run right away (default: `false`)
-- **In-flight protection**: If a previous run from the same schedule is still queued/active, the next trigger is skipped
-- **Startup catch-up**: Due schedules are checked on SWAT startup — no missed runs after restarts
-- **Source tracking**: Operations from schedules have `source: schedule/{id}` for traceability
+- **Per-file locking**: Concurrent safety via file locks
+- **Startup catch-up**: Due entries are checked on SWAT startup — no missed runs after restarts
 
-Use `swat_schedules` to view all schedules and `swat_schedule_delete(id)` to remove one.
+Use `swat_intake_list` to view all entries and `swat_intake_delete(id)` to remove one.
 
 **When to use SWAT scheduler vs OpenClaw cron:**
 - SWAT scheduler → deterministic recurring tasks (zero LLM cost, e.g. "analyze X every Monday")
