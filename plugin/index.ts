@@ -57,8 +57,8 @@ const TOOLS = [
     parameters: Type.Object({}),
   },
   {
-    name: "swat_schedule_create",
-    label: "SWAT Schedule Create",
+    name: "swat_intake_create",
+    label: "SWAT Intake Create",
     description: "Create a scheduled recurring task. Zero LLM cost. Read the swat skill for scheduling guidance.",
     parameters: Type.Object({
       brief: Type.String({ description: "Task description" }),
@@ -69,17 +69,17 @@ const TOOLS = [
     }),
   },
   {
-    name: "swat_schedules",
-    label: "SWAT Schedules",
-    description: "List all scheduled tasks with next run times",
+    name: "swat_intake_list",
+    label: "SWAT Intake List",
+    description: "List all intake queue entries (recurring schedules and pending immediate tasks)",
     parameters: Type.Object({}),
   },
   {
-    name: "swat_schedule_delete",
-    label: "SWAT Schedule Delete",
-    description: "Delete a scheduled task",
+    name: "swat_intake_delete",
+    label: "SWAT Intake Delete",
+    description: "Delete an intake queue entry",
     parameters: Type.Object({
-      id: Type.String({ description: "Schedule ID" }),
+      id: Type.String({ description: "Intake entry ID" }),
     }),
   },
   {
