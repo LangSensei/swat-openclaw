@@ -84,22 +84,7 @@ The target ID depends on your notification channel:
 
 ### Gateway Connection
 
-The Gateway port and token are read automatically from `~/.openclaw/openclaw.json`. No manual configuration is needed unless you want to override them.
-
-To override, add these to `~/.swat/.env`:
-
-```bash
-OPENCLAW_GATEWAY_PORT=<port>
-OPENCLAW_GATEWAY_TOKEN=<token>
-```
-
-### Priority Order
-
-Configuration values are resolved in this order (first match wins):
-
-1. Environment variables (exported in shell)
-2. `~/.swat/.env` file
-3. `~/.openclaw/openclaw.json` (port and token only)
+Gateway port and token are read from `~/.openclaw/openclaw.json`. Notification target and channel are read from `~/.swat/.env`. Each value has exactly one source.
 
 ### Testing
 
