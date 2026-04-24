@@ -58,7 +58,43 @@ irm https://raw.githubusercontent.com/LangSensei/swat-openclaw/main/uninstall.ps
 | `binaryPath` | — | Path to the `swat` binary (required) |
 | `runtime` | `copilot` | Agent runtime: `copilot`, `gemini` |
 
-Notifications are hardcoded to `openclaw` (sent via Gateway API).
+## Notification Configuration
+
+SWAT sends notifications through the OpenClaw Gateway API. To configure where notifications are delivered, set two environment variables in `~/.swat/.env`:
+
+```bash
+OPENCLAW_NOTIFY_TARGET=<target-id>
+OPENCLAW_NOTIFY_CHANNEL=<channel-type>
+```
+
+### Required Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `OPENCLAW_NOTIFY_TARGET` | Chat or channel ID for the target platform | `123456789` |
+| `OPENCLAW_NOTIFY_CHANNEL` | Notification channel type | `telegram`, `discord`, `signal` |
+
+### Finding Your Target ID
+
+The target ID depends on your notification channel:
+
+- **Telegram** — Use the `allowFrom` value from `~/.openclaw/openclaw.json`
+- **Discord** — DM channel ID (enable Developer Mode → right-click channel → Copy ID)
+- **Signal** — Phone number or group ID as configured in OpenClaw
+
+### Gateway Connection
+
+Gateway port and token are read from `~/.openclaw/openclaw.json`. Notification target and channel are read from `~/.swat/.env`. Each value has exactly one source.
+
+### Testing
+
+After configuration, verify notifications work:
+
+```bash
+swat notify "Test notification from SWAT"
+```
+
+If any required value is missing, `swat_notify` will return a descriptive error indicating which variable needs to be set.
 
 ## Related Repos
 
