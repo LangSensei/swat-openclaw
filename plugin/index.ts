@@ -119,6 +119,7 @@ const TOOLS = [
     description: "Send a notification to the user.",
     parameters: Type.Object({
       message: Type.String({ description: "Notification message to display" }),
+      operation_id: Type.Optional(Type.String({ description: "Operation ID (enables report link in desktop notification)" })),
     }),
   },
 ];

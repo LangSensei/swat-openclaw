@@ -38,6 +38,11 @@ SWAT dispatches tasks to autonomous AI squads powered by GitHub Copilot CLI. Eac
 | `swat_intake_list` | List all intake queue entries |
 | `swat_intake_delete` | Delete an intake queue entry |
 
+### Notifications
+| Tool | Purpose |
+|---|---|
+| `swat_notify` | Send a notification to the user (optionally with operation report link) |
+
 ## How to Dispatch
 
 1. **Dispatch** — `swat_dispatch(brief)`. Squad is auto-classified. Returns an operation ID immediately.
