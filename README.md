@@ -90,9 +90,8 @@ Gateway port and token are read from `~/.openclaw/openclaw.json`. Notification t
 
 After configuration, verify notifications work:
 
-```bash
-swat notify "Test notification from SWAT"
-```
+Use the `swat_notify` tool through OpenClaw to test notifications:
+> swat_notify(message="Test notification from SWAT")
 
 If any required value is missing, `swat_notify` will return a descriptive error indicating which variable needs to be set.
 
