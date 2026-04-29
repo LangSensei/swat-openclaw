@@ -37,6 +37,31 @@ Then restart OpenClaw:
 openclaw gateway restart
 ```
 
+## Post-Install Configuration
+
+After installing, you **must** configure your runtime before first use:
+
+Edit `~/.openclaw/openclaw.json`:
+```json
+{
+  "plugins": {
+    "entries": {
+      "swat-mcp-bridge": {
+        "config": {
+          "runtime": "copilot"
+        }
+      }
+    }
+  }
+}
+```
+
+Choose `"copilot"` or `"gemini"` based on which CLI you have installed.
+
+## Upgrade
+
+Re-run the same install command. The installer detects existing configuration and only updates plugin files and binary path — your `runtime`, notification settings, and other config are preserved.
+
 ## Uninstall
 
 ### Linux / macOS
@@ -56,7 +81,7 @@ irm https://raw.githubusercontent.com/LangSensei/swat-openclaw/main/uninstall.ps
 | Key | Default | Description |
 |-----|---------|-------------|
 | `binaryPath` | — | Path to the `swat` binary (required) |
-| `runtime` | `copilot` | Agent runtime: `copilot`, `gemini` |
+| `runtime` | — | Agent runtime: `copilot` or `gemini` (required) |
 
 ## Notification Configuration
 
@@ -91,7 +116,9 @@ Gateway port and token are read from `~/.openclaw/openclaw.json`. Notification t
 After configuration, verify notifications work:
 
 Use the `swat_notify` tool through OpenClaw to test notifications:
-> swat_notify(message="Test notification from SWAT")
+> swat_notify(message="Test notification from SWAT", operation_id="optional-op-id")
+
+The optional `operation_id` parameter enables a direct link to the operation report in the notification.
 
 If any required value is missing, `swat_notify` will return a descriptive error indicating which variable needs to be set.
 
