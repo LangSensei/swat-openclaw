@@ -6,6 +6,7 @@ $ErrorActionPreference = "Stop"
 $Repo = "LangSensei/swat-openclaw"
 $SwatHome = Join-Path $env:USERPROFILE ".swat"
 $PluginDir = Join-Path $SwatHome "plugin"
+$script:IsUpgrade = $false
 
 function Info  { param($Msg) Write-Host "[swat-openclaw] $Msg" -ForegroundColor Cyan }
 function Ok    { param($Msg) Write-Host "[swat-openclaw] $Msg" -ForegroundColor Green }
@@ -90,8 +91,9 @@ if (-not $binPath) { $binPath = (Join-Path $env:USERPROFILE ".swat\bin\swat.exe"
 $binPath = $binPath -replace '\\', '/'
 
 if (Test-Path $ocConfig) {
+    $nodeOutput = $null
     try {
-        node -e @"
+        $nodeOutput = node -e @"
 const fs = require('fs');
 const cfg = JSON.parse(fs.readFileSync('$($ocConfig -replace '\\', '/')', 'utf8'));
 cfg.plugins = cfg.plugins || {};
@@ -101,13 +103,26 @@ cfg.plugins.entries = cfg.plugins.entries || {};
 if (!cfg.plugins.load.paths.includes('$pluginPath')) {
     cfg.plugins.load.paths.push('$pluginPath');
 }
-cfg.plugins.entries['swat-mcp-bridge'] = {
-    enabled: true,
-    config: { binaryPath: '$binPath', runtime: 'copilot' }
-};
+if (cfg.plugins.entries['swat-mcp-bridge']) {
+    cfg.plugins.entries['swat-mcp-bridge'].enabled = true;
+    cfg.plugins.entries['swat-mcp-bridge'].config = cfg.plugins.entries['swat-mcp-bridge'].config || {};
+    cfg.plugins.entries['swat-mcp-bridge'].config.binaryPath = '$binPath';
+    process.stdout.write('upgrade');
+} else {
+    cfg.plugins.entries['swat-mcp-bridge'] = {
+        enabled: true,
+        config: { binaryPath: '$binPath' }
+    };
+    process.stdout.write('install');
+}
 fs.writeFileSync('$($ocConfig -replace '\\', '/')', JSON.stringify(cfg, null, 2) + '\n');
 "@
-        Ok "Plugin registered in OpenClaw config"
+        if ($nodeOutput -eq "upgrade") {
+            $script:IsUpgrade = $true
+            Ok "Plugin upgraded in OpenClaw config"
+        } else {
+            Ok "Plugin registered in OpenClaw config"
+        }
     } catch {
         Err "Failed to auto-register. Manually add to $ocConfig"
     }
@@ -127,10 +142,15 @@ Remove-Item -Recurse -Force $tmpDir -ErrorAction SilentlyContinue
 Write-Host ""
 Ok "SWAT OpenClaw integration installed! 🚀"
 Write-Host ""
-Info "Configuration:"
-Write-Host "  Runtime is set to 'copilot' (default)."
-Write-Host "  To change, edit ~/.openclaw/openclaw.json:"
-Write-Host "    plugins.entries.swat-mcp-bridge.config.runtime = `"copilot`" | `"gemini`""
+if ($script:IsUpgrade) {
+    Info "Plugin upgraded. Existing runtime configuration preserved."
+} else {
+    Info "Configuration:"
+    Write-Host "  Configure your runtime in ~/.openclaw/openclaw.json:"
+    Write-Host "    plugins.entries.swat-mcp-bridge.config.runtime = `"copilot`" | `"gemini`""
+    Write-Host ""
+    Write-Host "  This is REQUIRED before first use. Choose based on which CLI you have installed."
+}
 Write-Host ""
 Info "Notification setup:"
 Write-Host "  Configure notification delivery in ~/.swat/.env:"
