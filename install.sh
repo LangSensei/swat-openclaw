@@ -92,6 +92,7 @@ register_plugin() {
     local plugin_path
     plugin_path=$(cd "$PLUGIN_DIR" && pwd)
     plugin_path="${plugin_path//\\/\/}"
+    IS_UPGRADE="false"
 
     if [[ ! -f "$oc_config" ]]; then
         info "OpenClaw config not found at $oc_config"
@@ -107,7 +108,8 @@ register_plugin() {
     local bin_path
     bin_path=$(command -v swat)
 
-    if node -e "
+    local node_output
+    node_output=$(node -e "
         const fs = require('fs');
         const cfg = JSON.parse(fs.readFileSync('$oc_config', 'utf8'));
         cfg.plugins = cfg.plugins || {};
@@ -117,17 +119,31 @@ register_plugin() {
         if (!cfg.plugins.load.paths.includes('$plugin_path')) {
             cfg.plugins.load.paths.push('$plugin_path');
         }
-        cfg.plugins.entries['swat-mcp-bridge'] = {
-            enabled: true,
-            config: { binaryPath: '$bin_path', runtime: 'copilot' }
-        };
+        if (cfg.plugins.entries['swat-mcp-bridge']) {
+            cfg.plugins.entries['swat-mcp-bridge'].enabled = true;
+            cfg.plugins.entries['swat-mcp-bridge'].config = cfg.plugins.entries['swat-mcp-bridge'].config || {};
+            cfg.plugins.entries['swat-mcp-bridge'].config.binaryPath = '$bin_path';
+            process.stdout.write('upgrade');
+        } else {
+            cfg.plugins.entries['swat-mcp-bridge'] = {
+                enabled: true,
+                config: { binaryPath: '$bin_path' }
+            };
+            process.stdout.write('install');
+        }
         fs.writeFileSync('$oc_config', JSON.stringify(cfg, null, 2) + '\n');
-    " 2>/dev/null; then
-        ok "Plugin registered in OpenClaw config"
-        info "Restart OpenClaw to activate: openclaw gateway restart"
-    else
+    " 2>/dev/null) || {
         err "Failed to auto-register. Manually add to $oc_config"
+        return
+    }
+
+    if [[ "$node_output" == "upgrade" ]]; then
+        IS_UPGRADE="true"
+        ok "Plugin upgraded in OpenClaw config"
+    else
+        ok "Plugin registered in OpenClaw config"
     fi
+    info "Restart OpenClaw to activate: openclaw gateway restart"
 }
 
 # --- Cleanup ---
@@ -153,27 +169,14 @@ main() {
     echo ""
     ok "SWAT OpenClaw integration installed! 🚀"
     echo ""
-    info "Configuration:"
-    echo "  Runtime is set to 'copilot' (default)."
-    echo "  To change, edit ~/.openclaw/openclaw.json:"
-    echo "    plugins.entries.swat-mcp-bridge.config.runtime = \"copilot\" | \"gemini\""
+    if [[ "$IS_UPGRADE" == "true" ]]; then
+        info "Plugin upgraded. Existing configuration preserved."
+    else
+        info "Configure your runtime before first use:"
+        echo "  plugins.entries.swat-mcp-bridge.config.runtime = \"copilot\" | \"gemini\""
+    fi
     echo ""
-    info "Notification setup:"
-    echo "  Configure notification delivery in ~/.swat/.env:"
-    echo ""
-    echo "    OPENCLAW_NOTIFY_TARGET=<target-id>"
-    echo "    OPENCLAW_NOTIFY_CHANNEL=<telegram|discord|signal>"
-    echo ""
-    echo "  Target ID per channel:"
-    echo "    Telegram — allowFrom value from ~/.openclaw/openclaw.json"
-    echo "    Discord  — DM channel ID (Developer Mode → right-click → Copy ID)"
-    echo "    Signal   — phone number or group ID as configured in OpenClaw"
-    echo ""
-    echo "  Gateway port and token are read from ~/.openclaw/openclaw.json."
-    echo "  Each value has exactly one source — no env var overrides."
-    echo ""
-    echo "  Test with: swat notify \"Test notification\""
-    echo ""
+    info "Full documentation: https://github.com/LangSensei/swat-openclaw#readme"
     info "Next: openclaw gateway restart"
     echo ""
 }
